@@ -1,6 +1,6 @@
-package com.example.demo.infra;
+package com.example.demo.infra.persistence.jpa;
 
-import com.example.demo.domain.User;
+import com.example.demo.domain.user.User;
 import jakarta.persistence.*;
 
 @Entity

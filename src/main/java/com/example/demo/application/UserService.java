@@ -1,8 +1,7 @@
 package com.example.demo.application;
 
-import com.example.demo.domain.User;
-import com.example.demo.domain.UserRepository;
-
+import com.example.demo.domain.user.User;
+import com.example.demo.domain.user.UserRepository;
 import java.util.List;
 
 public class UserService {

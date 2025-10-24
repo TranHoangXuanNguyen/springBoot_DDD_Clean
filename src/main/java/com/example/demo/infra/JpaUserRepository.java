@@ -1,7 +1,8 @@
 package com.example.demo.infra;
 
-import com.example.demo.domain.User;
-import com.example.demo.domain.UserRepository;
+import com.example.demo.domain.user.User;
+import com.example.demo.domain.user.UserRepository;
+import com.example.demo.infra.persistence.jpa.UserEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
