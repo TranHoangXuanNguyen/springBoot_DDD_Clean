@@ -1,35 +1,43 @@
 package com.example.demo.infra;
 
-import com.example.demo.domain.user.User;
-import com.example.demo.domain.user.UserRepository;
+import com.example.demo.domain.user.*;
+import com.example.demo.infra.persistence.jpa.SpringDataUserRepository;
 import com.example.demo.infra.persistence.jpa.UserEntity;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+/**
+ * Bridge giữa domain repository interface và JPA repo.
+ * Giúp domain không phụ thuộc framework.
+ */
 @Repository
 public class JpaUserRepository implements UserRepository {
+    private final SpringDataUserRepository jpaRepo;
 
-    private final SpringDataUserRepository repository;
-
-    public JpaUserRepository(SpringDataUserRepository repository) {
-        this.repository = repository;
+    public JpaUserRepository(SpringDataUserRepository jpaRepo) {
+        this.jpaRepo = jpaRepo;
     }
 
     @Override
-    public User save(User user) {
-        UserEntity entity = UserEntity.fromDomain(user);
-        return repository.save(entity).toDomain();
+    public Optional<User> findById(UserId id) {
+        return jpaRepo.findById(id.asUUID())
+                .map(e -> new User(new UserId(e.getId()), new Email(e.getEmail()), e.getName()));
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return repository.findById(id).map(UserEntity::toDomain);
+    public Optional<User> findByEmail(Email email) {
+        return jpaRepo.findByEmail(email.value())
+                .map(e -> new User(new UserId(e.getId()), new Email(e.getEmail()), e.getName()));
     }
 
     @Override
-    public List<User> findAll() {
-        return repository.findAll().stream().map(UserEntity::toDomain).toList();
+    public void save(User user) {
+        UserEntity e = new UserEntity();
+        e.setId(user.id().asUUID());
+        e.setEmail(user.email().value());
+        e.setName(user.name());
+        jpaRepo.save(e);
     }
 }

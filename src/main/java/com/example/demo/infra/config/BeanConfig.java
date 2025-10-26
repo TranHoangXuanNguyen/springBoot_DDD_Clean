@@ -1,6 +1,5 @@
 package com.example.demo.infra.config;
 
-import com.example.demo.application.UserService;
 import com.example.demo.domain.user.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
