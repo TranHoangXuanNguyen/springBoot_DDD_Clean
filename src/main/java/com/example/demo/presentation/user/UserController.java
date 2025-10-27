@@ -2,11 +2,12 @@ package com.example.demo.presentation.user;
 
 import com.example.demo.application.command.CreateUserCommand;
 import com.example.demo.application.service.CreateUserService;
-import com.example.demo.application.service.GetUserByIdService;
+import com.example.demo.application.service.GetUserService;
 import com.example.demo.domain.user.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,11 +19,11 @@ import java.util.UUID;
 public class UserController {
 
     private final CreateUserService createUserService;
-    private final GetUserByIdService getUserByIdService;
+    private final GetUserService getUserService;
 
-    public UserController(CreateUserService createUserService, GetUserByIdService getUserByIdService) {
+    public UserController(CreateUserService createUserService, GetUserService getUserService) {
         this.createUserService = createUserService;
-        this.getUserByIdService = getUserByIdService;
+        this.getUserService = getUserService;
     }
 
     @PostMapping
@@ -31,8 +32,17 @@ public class UserController {
         return ResponseEntity.ok("User created");
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> findAll() {
+        List<User> users = getUserService.getUsers();
+        List<UserResponse> dtos = users.stream()
+                .map(UserResponse::fromDomain)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable UUID id) {
-        return ResponseEntity.ok(getUserByIdService.handle(id));
+        return ResponseEntity.ok(getUserService.handle(id));
     }
 }

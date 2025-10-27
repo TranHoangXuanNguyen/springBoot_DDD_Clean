@@ -6,6 +6,7 @@ import com.example.demo.domain.user.UserRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -13,10 +14,10 @@ import java.util.UUID;
  * @Cacheable: lưu cache User vào Redis để giảm truy cập DB.
  */
 @Service
-public class GetUserByIdService {
-    private final UserRepository userRepository;
+public class GetUserService {
 
-    public GetUserByIdService(UserRepository userRepository) {
+    private final UserRepository userRepository;
+    public GetUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -24,5 +25,9 @@ public class GetUserByIdService {
     public User handle(UUID userId) {
         return userRepository.findById(new UserId(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public List<User> getUsers() {
+        return  userRepository.findAll();
     }
 }

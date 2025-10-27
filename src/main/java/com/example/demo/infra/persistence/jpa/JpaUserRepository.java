@@ -1,12 +1,10 @@
-package com.example.demo.infra;
+package com.example.demo.infra.persistence.jpa;
 
 import com.example.demo.domain.user.*;
-import com.example.demo.infra.persistence.jpa.SpringDataUserRepository;
-import com.example.demo.infra.persistence.jpa.UserEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Bridge giữa domain repository interface và JPA repo.
@@ -33,11 +31,38 @@ public class JpaUserRepository implements UserRepository {
     }
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         UserEntity e = new UserEntity();
         e.setId(user.id().asUUID());
         e.setEmail(user.email().value());
         e.setName(user.name());
-        jpaRepo.save(e);
+        UserEntity saved = jpaRepo.save(e);
+
+        return toDomain(saved);
     }
+    @Override
+    public List<User> findAll() {
+        return jpaRepo.findAll()
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+
+    private User toDomain(UserEntity entity) {
+        return new User(
+                new UserId(entity.getId()),
+                new Email(entity.getEmail()),
+                entity.getName()
+        );
+    }
+
+    private UserEntity toEntity(User user) {
+        UserEntity entity = new UserEntity();
+        entity.setId(user.id().asUUID());
+        entity.setEmail(user.email().value());
+        entity.setName(user.name());
+        return entity;
+    }
+
 }
