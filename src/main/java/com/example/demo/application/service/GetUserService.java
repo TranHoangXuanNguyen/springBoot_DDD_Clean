@@ -1,5 +1,6 @@
 package com.example.demo.application.service;
 
+import com.example.demo.application.DTO.GetUserByIdRespone;
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserId;
 import com.example.demo.domain.user.UserRepository;
@@ -22,11 +23,13 @@ public class GetUserService {
     }
 
     @Cacheable(value = "userCache", key = "#userId")
-    public User handle(UUID userId) {
-        return userRepository.findById(new UserId(userId))
+    public GetUserByIdRespone handle(UUID userId) {
+        User user = userRepository.findById(new UserId(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
-    }
 
+        // Convert domain → DTO ngay tại đây
+        return GetUserByIdRespone.from(user);
+    }
     public List<User> getUsers() {
         return  userRepository.findAll();
     }

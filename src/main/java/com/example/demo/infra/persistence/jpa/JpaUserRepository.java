@@ -13,11 +13,9 @@ import java.util.Optional;
 @Repository
 public class JpaUserRepository implements UserRepository {
     private final SpringDataUserRepository jpaRepo;
-
     public JpaUserRepository(SpringDataUserRepository jpaRepo) {
         this.jpaRepo = jpaRepo;
     }
-
     @Override
     public Optional<User> findById(UserId id) {
         return jpaRepo.findById(id.asUUID())

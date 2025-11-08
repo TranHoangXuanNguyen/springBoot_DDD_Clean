@@ -16,11 +16,9 @@ import java.util.UUID;
 @Service
 public class CreateUserService {
     private final UserRepository userRepository;
-
     public CreateUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
     public void handle(CreateUserCommand cmd) {
         User user = new User(
                 new UserId(UUID.randomUUID()),

@@ -1,5 +1,6 @@
 package com.example.demo.presentation.user;
 
+import com.example.demo.application.DTO.GetUserByIdRespone;
 import com.example.demo.application.command.CreateUserCommand;
 import com.example.demo.application.service.CreateUserService;
 import com.example.demo.application.service.GetUserService;
@@ -42,7 +43,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable UUID id) {
-        return ResponseEntity.ok(getUserService.handle(id));
+    public ResponseEntity<GetUserByIdRespone> getUser(@PathVariable("id") UUID id) {
+        GetUserByIdRespone userDto = getUserService.handle(id); // đã convert sang DTO trong service
+        return ResponseEntity.ok(userDto);
     }
+
 }
